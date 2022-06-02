@@ -178,9 +178,10 @@ class KeywordQueryEventListener(EventListener):
             return self.no_op_result_items(["There was an error running this extension."], "error")
 
         def create_result_item(filename):
+            
             return ExtensionSmallResultItem(
                 icon="images/sub-icon.png",
-                name=filename,
+                name=path.basename(filename),
                 on_enter=OpenAction(filename),
                 on_alt_enter=OpenAction(self.get_dirname(filename)),
             )
