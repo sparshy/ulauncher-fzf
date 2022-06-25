@@ -85,7 +85,7 @@ class FuzzyFinderExtension(Extension):
     @staticmethod
     def generate_fd_cmd(fd_bin: str, preferences: FuzzyFinderPreferences) -> List[str]:
         # Hardcoding Downloads directory for now.
-        cmd = [fd_bin, ".", preferences["base_dir"], '~/Downloads']
+        cmd = [fd_bin, ".", preferences["base_dir"], path.expanduser('~/Downloads')]
         if preferences["search_type"] == SearchType.FILES:
             cmd.extend(["--type", "f"])
         elif preferences["search_type"] == SearchType.DIRS:
