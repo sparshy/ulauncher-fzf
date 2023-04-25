@@ -78,6 +78,7 @@ class FuzzyFinderExtension(Extension):
             "result_limit": int(input_preferences["result_limit"]),
             "base_dir": [path.expanduser(d.strip()) for d in input_preferences["base_dir"].split(",")],
             "ignore_file": path.expanduser(input_preferences["ignore_file"]),
+            "display_full_path": bool(int(input_preferences["display_full_path"])),
         }
 
         logger.debug("Using user preferences %s", preferences)
@@ -186,10 +187,11 @@ class KeywordQueryEventListener(EventListener):
             return self.no_op_result_items(["There was an error running this extension."], "error")
 
         def create_result_item(filename):
+            display_name = filename if preferences["display_full_path"] else path.basename(filename)
 
             return ExtensionSmallResultItem(
                 icon="images/sub-icon.png",
-                name=path.basename(filename),
+                name=display_name,
                 on_enter=OpenAction(filename),
                 on_alt_enter=OpenAction(self.get_dirname(filename)),
             )
