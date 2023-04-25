@@ -74,7 +74,7 @@ class FuzzyFinderExtension(Extension):
             "search_type": SearchType(int(input_preferences["search_type"])),
             "allow_hidden": bool(int(input_preferences["allow_hidden"])),
             "result_limit": int(input_preferences["result_limit"]),
-            "base_dir": path.expanduser(input_preferences["base_dir"]),
+            "base_dir": [path.expanduser(d.strip()) for d in input_preferences["base_dir"].split(",")],
             "ignore_file": path.expanduser(input_preferences["ignore_file"]),
         }
 
@@ -84,8 +84,11 @@ class FuzzyFinderExtension(Extension):
 
     @staticmethod
     def generate_fd_cmd(fd_bin: str, preferences: FuzzyFinderPreferences) -> List[str]:
-        # Hardcoding Downloads directory for now.
-        cmd = [fd_bin, ".", preferences["base_dir"], path.expanduser('~/Downloads')]
+        cmd = [fd_bin, "."]
+
+        
+        for directory in preferences["base_dir"]:
+            cmd.extend([directory])
         if preferences["search_type"] == SearchType.FILES:
             cmd.extend(["--type", "f"])
         elif preferences["search_type"] == SearchType.DIRS:
@@ -126,7 +129,8 @@ class FuzzyFinderExtension(Extension):
         fd_cmd = self.generate_fd_cmd(fd_bin, preferences)
         with subprocess.Popen(fd_cmd, stdout=subprocess.PIPE) as fd_proc:
             fzf_cmd = [fzf_bin, "--filter", query]
-            output = subprocess.check_output(fzf_cmd, stdin=fd_proc.stdout, text=True)
+            output = subprocess.check_output(
+                fzf_cmd, stdin=fd_proc.stdout, text=True)
             results = output.splitlines()
 
             limit = preferences["result_limit"]
@@ -175,11 +179,12 @@ class KeywordQueryEventListener(EventListener):
             if failing_cmd == "fzf" and error.returncode == 1:
                 return self.no_op_result_items(["No results found."])
 
-            logger.debug("Subprocess %s failed with status code %s", error.cmd, error.returncode)
+            logger.debug("Subprocess %s failed with status code %s",
+                         error.cmd, error.returncode)
             return self.no_op_result_items(["There was an error running this extension."], "error")
 
         def create_result_item(filename):
-            
+
             return ExtensionSmallResultItem(
                 icon="images/sub-icon.png",
                 name=path.basename(filename),
