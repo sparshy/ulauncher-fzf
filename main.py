@@ -48,9 +48,11 @@ class FuzzyFinderExtension(Extension):
         logger.debug("Checking user preferences are valid")
         errors = []
 
-        base_dir = preferences["base_dir"]
-        if not path.isdir(path.expanduser(base_dir)):
-            errors.append(f"Base directory '{base_dir}' is not a directory.")
+        base_dirs = [path.expanduser(d.strip()) for d in preferences["base_dir"].split(",")]
+        for base_dir in base_dirs:
+            if not path.isdir(base_dir):
+                errors.append(f"Base directory '{base_dir}' is not a directory.")
+
 
         ignore_file = preferences["ignore_file"]
         if ignore_file and not path.isfile(path.expanduser(ignore_file)):
@@ -86,7 +88,7 @@ class FuzzyFinderExtension(Extension):
     def generate_fd_cmd(fd_bin: str, preferences: FuzzyFinderPreferences) -> List[str]:
         cmd = [fd_bin, "."]
 
-        
+
         for directory in preferences["base_dir"]:
             cmd.extend([directory])
         if preferences["search_type"] == SearchType.FILES:
