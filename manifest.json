@@ -15,6 +15,13 @@
       "default_value": "fzf"
     },
     {
+      "id": "display_full_path",
+      "type": "bool",
+      "default_value": "false",
+      "name": "Display full path",
+      "description": "Show full file path in the search results. If unchecked, only the file name will be displayed."
+    },    
+    {
       "id": "search_type",
       "type": "select",
       "name": "Search type",
