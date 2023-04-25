@@ -16,7 +16,7 @@
     },
     {
       "id": "display_full_path",
-      "type": "options",
+      "type": "select",
       "options": [
         {"value": "0", "label": "Show basename"},
         {"value": "1", "label": "Show full path"}
