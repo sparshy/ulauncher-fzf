@@ -18,8 +18,8 @@
       "id": "display_full_path",
       "type": "select",
       "options": [
-        {"value": "0", "label": "Show basename"},
-        {"value": "1", "label": "Show full path"}
+        {"value": "0", "text": "Show basename"},
+        {"value": "1", "text": "Show full path"}
       ],
       "default_value": "0",
       "name": "Display file path",
